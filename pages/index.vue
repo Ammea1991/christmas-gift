@@ -1,6 +1,8 @@
 <template>
 	<div>
 		<h1>{{ message }}</h1>
+
+		<QrCodeGen />
 	</div>
 </template>
 
