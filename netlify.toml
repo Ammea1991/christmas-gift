@@ -1,7 +1,7 @@
 [build]
   base = "/"
   command = "npm run build"
-  publish = "/.output/public"
+  publish = "dist"
 
 [functions]
   external_node_modules = ["mongodb"]
