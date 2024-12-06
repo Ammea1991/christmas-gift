@@ -2,13 +2,13 @@
 	<v-container>
 		<v-row>
 			<v-col cols="12" sm="6" offset-sm="3">
-				<div>
+				<div class="mb-6 text-center">
 					<v-text-field v-model="message" label="Inserisci il messaggio" outlined clearable></v-text-field>
 				</div>
 
 				<qrcode-vue :value="qrValue" size="256" />
 
-				<v-btn color="primary" @click="generateQRCode"> Genera QR Code </v-btn>
+				<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 			</v-col>
 		</v-row>
 	</v-container>
@@ -32,8 +32,11 @@ export default {
 	computed: {
 		// La URL con il token del messaggio
 		qrValue() {
-			const token = encodeURIComponent(this.message);
-			return `https://example.com/read?token=${token}`;
+			const token = encodeURIComponent(this.token);
+			return `https://mea-christmas-gift.netlify.app/?token=${token}`;
+		},
+		token() {
+			return uuidv4();
 		},
 	},
 	methods: {
@@ -42,6 +45,8 @@ export default {
 			if (this.message) {
 				// Chiamata al backend per salvare il messaggio
 				try {
+					// Genera un token UUID
+
 					const response = await axios.post("/api/messages", {
 						message: this.message,
 					});
@@ -56,6 +61,17 @@ export default {
 				}
 			} else {
 				this.$toast.error("Inserisci un messaggio!");
+			}
+		},
+		async sendMessage() {
+			try {
+				const response = await axios.post("/api/message/messages", {
+					token: this.token,
+					message: this.message,
+				});
+				console.log("Messaggio inviato:", response);
+			} catch (error) {
+				console.error("Errore:", error);
 			}
 		},
 	},

@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<RouterView />
+		<v-app>
+			<RouterView />
+		</v-app>
 	</div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style scoped>
 h1 {
