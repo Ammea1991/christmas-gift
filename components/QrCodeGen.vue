@@ -4,33 +4,30 @@
 			<v-col cols="12" sm="6" offset-sm="3">
 				<div class="mb-6 text-center">
 					<v-text-field v-model="message" label="Inserisci il messaggio" outlined clearable></v-text-field>
+
+					<canvas ref="qrCodeCanvas"></canvas>
+
+					<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 				</div>
-
-				<qrcode-vue :value="qrValue" size="256" />
-
-				<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 			</v-col>
 		</v-row>
 	</v-container>
 </template>
 
 <script>
-import axios from "axios"; // Importa axios
-import { v4 as uuidv4 } from "uuid"; // Importa la funzione per generare UUID
-import QrcodeVue from "qrcode.vue";
+import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import QRCode from "qrcode"; // Importa QRCode dalla libreria
 
 export default {
 	name: "QrCodeGenerator",
-	components: {
-		QrcodeVue,
-	},
 	data() {
 		return {
-			message: "", // Messaggio dell'utente
+			message: null,
+			qrColor: "#234022", // Colore scuro del QR code
 		};
 	},
 	computed: {
-		// La URL con il token del messaggio
 		qrValue() {
 			const token = encodeURIComponent(this.token);
 			return `https://mea-christmas-gift.netlify.app/?token=${token}`;
@@ -39,30 +36,32 @@ export default {
 			return uuidv4();
 		},
 	},
+	watch: {
+		message() {
+			this.generateQRCode();
+		},
+	},
 	methods: {
-		// Funzione per generare il QR code
+		// Funzione per generare il QR code con canvas
 		async generateQRCode() {
-			if (this.message) {
-				// Chiamata al backend per salvare il messaggio
-				try {
-					// Genera un token UUID
+			const canvas = this.$refs.qrCodeCanvas;
+			const options = {
+				errorCorrectionLevel: "H", // Livello di correzione dell'errore (High)
+				width: 256, // Larghezza del QR Code
+				color: {
+					dark: this.qrColor, // Colore scuro del QR code
+					light: "#ffffff", // Colore chiaro dello sfondo
+				},
+				margin: 2, // Margine intorno al QR code
+			};
 
-					const response = await axios.post("/api/messages", {
-						message: this.message,
-					});
-
-					const token = response.data.token; // Ottieni il token generato
-
-					// Mostra il QR Code
-					this.$toast.success("QR Code generato!");
-					console.log("QR Code generato per:", this.qrValue);
-				} catch (error) {
-					this.$toast.error("Errore nel salvataggio del messaggio.");
-				}
-			} else {
-				this.$toast.error("Inserisci un messaggio!");
+			try {
+				await QRCode.toCanvas(canvas, this.qrValue, options); // Genera il QR code sul canvas
+			} catch (error) {
+				console.error("Errore nella generazione del QR Code:", error);
 			}
 		},
+
 		async sendMessage() {
 			try {
 				const response = await axios.post("/api/message/messages", {
@@ -75,11 +74,8 @@ export default {
 			}
 		},
 	},
+	mounted() {
+		this.generateQRCode(); // Genera il QR code al caricamento del componente
+	},
 };
 </script>
-
-<style scoped>
-v-btn {
-	margin-top: 10px;
-}
-</style>
