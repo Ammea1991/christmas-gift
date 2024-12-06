@@ -3,11 +3,25 @@
 		<v-row>
 			<v-col cols="12" sm="6" offset-sm="3">
 				<div class="mb-6 text-center">
-					<v-text-field v-model="message" label="Inserisci il messaggio" outlined clearable></v-text-field>
+					<v-form ref="form">
+						<v-text-field
+							v-model="form.title"
+							label="Inserisci il titolo del biglietto di auguri"
+							outlined
+							clearable
+						></v-text-field>
+						<v-text-field
+							v-model="form.text"
+							label="Inserisci il messaggio di auguri"
+							outlined
+							clearable
+						></v-text-field>
+					</v-form>
 
 					<canvas ref="qrCodeCanvas"></canvas>
-
-					<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
+					<div class="pa-4">
+						<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
+					</div>
 				</div>
 			</v-col>
 		</v-row>
@@ -23,7 +37,11 @@ export default {
 	name: "QrCodeGenerator",
 	data() {
 		return {
-			message: null,
+			form: {
+				title: null,
+				text: null,
+			},
+
 			qrColor: "#234022", // Colore scuro del QR code
 		};
 	},
@@ -67,7 +85,7 @@ export default {
 				await this.generateQRCode();
 				const response = await axios.post("/api/message/messages", {
 					token: this.token,
-					message: this.message,
+					message: this.form,
 				});
 				console.log("Messaggio inviato:", response);
 			} catch (error) {

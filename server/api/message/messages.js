@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
 	const body = await readBody(event);
 
 	const { token, message } = body;
-
+	console.log("token", token, "message", message);
 	// Connessione a MongoDB
 	const client = new MongoClient(process.env.DB_URI);
 	try {
