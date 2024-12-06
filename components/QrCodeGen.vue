@@ -9,6 +9,10 @@
 
 					<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 				</div>
+				<a :href="qrValue"
+					><v-btn color="primary">{{ qrValue }}</v-btn></a
+				>
+				{{ token }}
 			</v-col>
 		</v-row>
 	</v-container>
@@ -36,11 +40,11 @@ export default {
 			return uuidv4();
 		},
 	},
-	watch: {
-		message() {
-			this.generateQRCode();
-		},
-	},
+	// watch: {
+	// 	message() {
+	// 		this.generateQRCode();
+	// 	},
+	// },
 	methods: {
 		// Funzione per generare il QR code con canvas
 		async generateQRCode() {
@@ -64,6 +68,7 @@ export default {
 
 		async sendMessage() {
 			try {
+				await this.generateQRCode();
 				const response = await axios.post("/api/message/messages", {
 					token: this.token,
 					message: this.message,
@@ -73,9 +78,6 @@ export default {
 				console.error("Errore:", error);
 			}
 		},
-	},
-	mounted() {
-		this.generateQRCode(); // Genera il QR code al caricamento del componente
 	},
 };
 </script>
