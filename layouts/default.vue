@@ -1,17 +1,18 @@
+<!-- layouts/default.vue -->
 <template>
-	<h1 class="text-center pa-4">Christmas Message 🎄</h1>
-	<div class="snowflakes" ref="snowflakes"></div>
+	<div class="layout-wrapper">
+		<!-- Il contenuto principale della pagina -->
+		<v-app>
+			<slot> </slot>
+			<div class="snowflakes" ref="snowflakes"></div>
 
-	<QrCodeGen />
+			<!-- Qui verrà renderizzato il contenuto della pagina -->
+		</v-app>
+	</div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-
-const route = useRoute();
-const token = route.query.token || null;
-const message = ref("Caricamento...");
+import { onMounted, ref } from "vue";
 const snowflakes = ref(null);
 
 // Funzione per generare i fiocchi di neve
@@ -42,21 +43,7 @@ const createSnowflakes = () => {
 
 onMounted(async () => {
 	createSnowflakes(); // Genera i fiocchi di neve al caricamento della pagina
-
-	if (token) {
-		try {
-			const response = await fetch(`/api/message/${token}`);
-			const data = await response.json();
-			if (data.error) {
-				message.value = data.error;
-			} else {
-				message.value = data.message;
-			}
-		} catch (error) {
-			message.value = "Errore nel caricamento del messaggio.";
-		}
-	} else {
-		message.value = "Token non valido.";
-	}
 });
 </script>
+
+<style scoped></style>

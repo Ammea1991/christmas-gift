@@ -1,0 +1,42 @@
+* {
+	margin: 0;
+	padding: 0;
+	overflow: hidden; /* Per evitare che i fiocchi di neve escano fuori dalla vista */
+	color: white; /* Imposta il colore del testo a bianco */
+	z-index: 10;
+}
+
+/* Container per la neve */
+.snowflakes {
+	position: absolute; /* Posiziona gli snowflakes sopra il contenuto */
+	top: 0; /* Inizia dalla parte superiore della pagina */
+	left: 0; /* Inizia dalla parte sinistra della pagina */
+	width: 100%; /* Occupa tutta la larghezza della pagina */
+	height: 100%; /* Occupa tutta l'altezza della pagina */
+	pointer-events: none; /* Disabilita gli eventi del mouse sugli snowflakes */
+	z-index: 0; /* Posiziona gli snowflakes sotto il resto del contenuto */
+	overflow: hidden; /* Per evitare che i fiocchi di neve escano fuori dalla vista */
+	background-color: #152f48d4;
+}
+
+/* Stile per ogni fiocco di neve */
+.snowflake {
+	position: absolute;
+	z-index: 10;
+	background-color: white;
+	// width: 5px !important;
+	// height: 5px !important;
+	border-radius: 50%; /* Forma rotonda */
+	opacity: 0.4;
+	animation: snow 100s linear infinite;
+}
+
+/* Animazione della neve */
+@keyframes snow {
+	0% {
+		transform: translateY(-100px); /* Partenza da sopra */
+	}
+	100% {
+		transform: translateY(100vh); /* Arrivo fino in fondo alla finestra */
+	}
+}

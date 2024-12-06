@@ -26,7 +26,7 @@ onMounted(async () => {
 			message.value = "Errore nel caricamento del messaggio.";
 		}
 	} else {
-		message.value = "Token non valido.";
+		message.value = "Ops... Qualcosa e' andato storto.";
 	}
 });
 </script>
