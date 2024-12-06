@@ -1,12 +1,18 @@
 <template>
 	<div>
-		<h1 class="text-center pa-4">{{ message }}</h1>
+		<h1 class="text-center pa-4">Christmas Message 🎄</h1>
+
+		<QrCodeGen />
 	</div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+
+// definePageMeta({
+// 	middleware: "basic-auth",
+// });
 
 const route = useRoute();
 const token = route.query.token || null;

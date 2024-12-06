@@ -9,10 +9,6 @@
 
 					<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 				</div>
-				<a :href="qrValue"
-					><v-btn color="primary">{{ qrValue }}</v-btn></a
-				>
-				{{ token }}
 			</v-col>
 		</v-row>
 	</v-container>
