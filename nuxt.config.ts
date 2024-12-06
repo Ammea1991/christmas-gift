@@ -14,6 +14,14 @@ export default defineNuxtConfig({
 	//...
 	compatibilityDate: "2024-11-01",
 	devtools: { enabled: true },
+	$meta: {
+		link: [
+			{
+				rel: "stylesheet",
+				href: "https://fonts.googleapis.com/css2?family=Pacifico&display=swap",
+			},
+		],
+	},
 	ssr: true,
 	app: {},
 	css: [
