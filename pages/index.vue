@@ -15,9 +15,7 @@ const message = ref("Caricamento...");
 onMounted(async () => {
 	if (token) {
 		try {
-			debugger;
 			const response = await fetch(`/api/message/${token}`);
-			debugger;
 			const data = await response.json();
 			if (data.error) {
 				message.value = data.error;
