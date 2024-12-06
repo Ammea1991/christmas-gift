@@ -1,9 +1,7 @@
 [build]
+  base = "/"
   command = "npm run build"
   publish = ".output/public"
 
 [functions]
-  directory = ".output/server"
-  external_node_modules = [
-    "mongodb"
-  ]
+  external_node_modules = ["mongodb"]
