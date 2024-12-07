@@ -23,6 +23,9 @@
 					<div class="pa-4">
 						<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 					</div>
+					<div class="pa-4">
+						<v-btn color="primary" @click="downloadQRCodeAsPDF">Scarica QR Code come PDF</v-btn>
+					</div>
 				</div>
 			</v-col>
 		</v-row>
@@ -33,6 +36,7 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode"; // Importa QRCode dalla libreria
+import jsPDF from "jspdf"; // Importa il pacchetto jsPDF
 
 export default {
 	name: "QrCodeGenerator",
@@ -42,18 +46,19 @@ export default {
 				title: null,
 				text: null,
 			},
-
+			qrValue: null,
+			token: null,
 			qrColor: "#234022", // Colore scuro del QR code
 		};
 	},
 	computed: {
-		qrValue() {
-			const token = encodeURIComponent(this.token);
-			return `https://mea-christmas-gift.netlify.app/?token=${token}`;
-		},
-		token() {
-			return uuidv4();
-		},
+		// qrValue() {
+		// 	const token = encodeURIComponent(this.token);
+		// 	return `https://mea-christmas-gift.netlify.app/?token=${token}`;
+		// },
+		// token() {
+		// 	return uuidv4();
+		// },
 	},
 	// watch: {
 	// 	message() {
@@ -61,9 +66,40 @@ export default {
 	// 	},
 	// },
 	methods: {
+		async downloadQRCodeAsPDF() {
+			if (!this.qrValue) return;
+			const canvas = this.$refs.qrCodeCanvas;
+			// Crea il PDF
+			const doc = new jsPDF();
+
+			// Imposta il testo da visualizzare
+			const text = "Scan me";
+
+			// Centra il QR code
+			const x = (doc.internal.pageSize.width - 100) / 2;
+			const y = (doc.internal.pageSize.height - 100) / 3; // Posiziona il QR code un po' più in alto della pagina
+
+			// Aggiungi il QR code
+			doc.addImage(canvas, "PNG", x, y, 100, 100); // 100 è la larghezza dell'immagine del QR code
+
+			// Aggiungi il testo sotto il QR code
+			doc.setFont("helvetica", "normal");
+			doc.setFontSize(12);
+			doc.text(text, doc.internal.pageSize.width / 2, y + 120, { align: "center" });
+
+			// Salva il PDF
+			doc.save("qrcode.pdf");
+		},
 		// Funzione per generare il QR code con canvas
 		async generateQRCode() {
+			if (this.form.title === null || this.form.text === null) return;
 			const canvas = this.$refs.qrCodeCanvas;
+			const token = uuidv4();
+			const IRI = encodeURIComponent(token);
+
+			this.token = token;
+			this.qrValue = `https://mea-christmas-gift.netlify.app/?token=${IRI}`;
+
 			const options = {
 				errorCorrectionLevel: "H", // Livello di correzione dell'errore
 				type: "image/png", // Tipo di immagine
@@ -79,14 +115,16 @@ export default {
 
 			try {
 				await QRCode.toCanvas(canvas, this.qrValue, options); // Genera il QR code sul canvas
-			} catch (error) {
-				console.error("Errore nella generazione del QR Code:", error);
+				return { err: false };
+			} catch (err) {
+				return { err };
 			}
 		},
 
 		async sendMessage() {
 			try {
-				await this.generateQRCode();
+				const { err } = await this.generateQRCode();
+				if (err) return;
 				const response = await axios.post("/api/message/messages", {
 					token: this.token,
 					message: this.form,
