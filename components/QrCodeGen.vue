@@ -73,7 +73,6 @@ export default {
 			const doc = new jsPDF();
 
 			// Imposta il testo da visualizzare
-			const text = "Scan me";
 
 			// Centra il QR code
 			const x = (doc.internal.pageSize.width - 100) / 2;
@@ -85,7 +84,7 @@ export default {
 			// Aggiungi il testo sotto il QR code
 			doc.setFont("helvetica", "normal");
 			doc.setFontSize(12);
-			doc.text(text, doc.internal.pageSize.width / 2, y + 120, { align: "center" });
+			doc.text(doc.internal.pageSize.width / 2, y + 120, { align: "center" });
 
 			// Salva il PDF
 			doc.save("qrcode.pdf");
