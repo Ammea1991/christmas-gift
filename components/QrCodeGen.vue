@@ -17,8 +17,9 @@
 							clearable
 						></v-text-field>
 					</v-form>
-
-					<canvas ref="qrCodeCanvas"></canvas>
+					<div class="qr-container">
+						<canvas ref="qrCodeCanvas"></canvas>
+					</div>
 					<div class="pa-4">
 						<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 					</div>
@@ -64,13 +65,16 @@ export default {
 		async generateQRCode() {
 			const canvas = this.$refs.qrCodeCanvas;
 			const options = {
-				errorCorrectionLevel: "H", // Livello di correzione dell'errore (High)
-				width: 256, // Larghezza del QR Code
+				errorCorrectionLevel: "H", // Livello di correzione dell'errore
+				type: "image/png", // Tipo di immagine
+				width: 256, // Larghezza del QR code
 				color: {
-					dark: this.qrColor, // Colore scuro del QR code
-					light: "#ffffff", // Colore chiaro dello sfondo
+					dark: "#000", // Colore scuro (colore principale del QR)
+					light: "#9f1616", // Colore chiaro (sfondo)
 				},
-				margin: 2, // Margine intorno al QR code
+				background: "#234022", // Sfondo del QR code
+				margin: 4, // Margine234022
+				// Puoi aggiungere altre personalizzazioni come logo nel QR code
 			};
 
 			try {
@@ -95,3 +99,12 @@ export default {
 	},
 };
 </script>
+<style lang="scss" scoped>
+.qr-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	// margin-top: 50px;
+}
+</style>
