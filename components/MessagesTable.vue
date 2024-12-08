@@ -33,25 +33,22 @@ export default {
 		// 	return uuidv4();
 		// },
 	},
-	// watch: {
-	// 	message() {
-	// 		this.generateQRCode();
-	// 	},
-	// },
 	async mounted() {
 		await this.getMessages();
 	},
 	methods: {
 		async getMessages() {
 			try {
-				const { data } = await axios.get("/api/messages/get");
-
+				const { data } = await this.$axios.get("/messages");
+				debugger;
 				// Normalizza i messaggi
-				this.messages = data.messages.map((item) => ({
-					id: item._id,
-					title: item.message?.title || "N/A",
-					text: item.message?.text || "N/A",
-				}));
+				this.messages = data
+					.map((item) => ({
+						id: item?._id,
+						title: item?.message?.title,
+						text: item?.message?.text,
+					}))
+					.filter((item) => item.title !== null && item.text !== null);
 			} catch (error) {
 				console.error("Errore:", error);
 			}

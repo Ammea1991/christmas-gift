@@ -44,7 +44,11 @@ export default defineNuxtConfig({
 		},
 		//...
 	],
-
+	runtimeConfig: {
+		public: {
+			apiURL: process.env.API_URL || "https://api.example.com",
+		},
+	},
 	vite: {
 		vue: {
 			template: {
