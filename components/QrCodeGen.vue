@@ -33,8 +33,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 import QRCode from "qrcode"; // Importa QRCode dalla libreria
 import jsPDF from "jspdf"; // Importa il pacchetto jsPDF
 
@@ -51,20 +49,8 @@ export default {
 			qrColor: "#234022", // Colore scuro del QR code
 		};
 	},
-	computed: {
-		// qrValue() {
-		// 	const token = encodeURIComponent(this.token);
-		// 	return `https://mea-christmas-gift.netlify.app/?token=${token}`;
-		// },
-		// token() {
-		// 	return uuidv4();
-		// },
-	},
-	// watch: {
-	// 	message() {
-	// 		this.generateQRCode();
-	// 	},
-	// },
+	computed: {},
+
 	methods: {
 		async downloadQRCodeAsPDF() {
 			if (!this.qrValue) return;
@@ -93,11 +79,10 @@ export default {
 		async generateQRCode() {
 			if (this.form.title === null || this.form.text === null) return;
 			const canvas = this.$refs.qrCodeCanvas;
-			const token = uuidv4();
-			const IRI = encodeURIComponent(token);
 
-			this.token = token;
-			this.qrValue = `https://mea-christmas-gift.netlify.app/?token=${IRI}`;
+			const IRI = encodeURIComponent(this.token);
+
+			this.qrValue = `https://mea-christmas-gift.netlify.app/?_id=${IRI}`;
 
 			const options = {
 				errorCorrectionLevel: "H", // Livello di correzione dell'errore
@@ -122,13 +107,23 @@ export default {
 
 		async sendMessage() {
 			try {
-				const { err } = await this.generateQRCode();
-				if (err) return;
-				const response = await axios.post("/api/message/messages", {
-					token: this.token,
+				// if (err) return;
+				// const response = await axios.post("/api/message/messages", {
+				// 	token: this.token,
+				// 	message: this.form,
+				// });
+
+				const { data, error } = await this.$axios.post("/messages/create", {
 					message: this.form,
 				});
-				console.log("Messaggio inviato:", response);
+				if (error) return;
+				const { savedMessage } = data;
+
+				this.token = savedMessage._id;
+
+				const { err } = await this.generateQRCode();
+				if (err) return;
+				console.log("Messaggio inviato:", data);
 			} catch (error) {
 				console.error("Errore:", error);
 			}

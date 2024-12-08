@@ -15,34 +15,69 @@
 	</v-container>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+<script>
+export default {
+	name: "Message",
+	data() {
+		return {
+			message: {},
+			loading: false,
+		};
+	},
+	methods: {
+		async getMessage() {
+			try {
+				const { _id } = this.$route.query;
+				if (!_id) return (this.message.title = "Nessun messaggio 🎄");
 
-const route = useRoute();
-const loading = ref(false);
-const token = route.query.token || null;
-const message = ref("Caricamento...");
+				this.loading = true;
+				const { data, error } = await this.$axios.get("/message", {
+					params: { _id },
+				});
 
-onMounted(async () => {
-	if (token) {
-		try {
-			loading.value = true;
-			const response = await fetch(`/api/message/${token}`);
-			const data = await response.json();
-			if (data.error) {
-				message.value = data.error;
-			} else {
-				message.value = data.message;
+				this.loading = false;
+				if (error) return (this.message = error);
+				this.message = data.message;
+			} catch (err) {
+				this.loading = false;
+
+				return (this.message.title = err.response.data.error);
 			}
-			loading.value = false;
-		} catch (error) {
-			message.value = "Errore nel caricamento del messaggio.";
-		}
-	} else {
-		message.value = "Ops... Qualcosa e' andato storto.";
-	}
-});
+		},
+	},
+	mounted() {
+		this.getMessage();
+	},
+};
+// const route = useRoute();
+// const loading = ref(false);
+// const IRI = route.query._id || null;
+// const message = ref("Caricamento...");
+
+// onMounted(async () => {
+// 	const { $axios } = useNuxtApp(); // Accedi a $axios dal Nuxt app
+
+// 	if (IRI) {
+// 		try {
+// 			loading.value = true;
+// 			;
+// 			console.log(this);
+// 			const { data } = await $axios.get("/message", { id: IRI });
+// 			;
+// 			// const data = await response.json();
+// 			if (data.error) {
+// 				message.value = data.error;
+// 			} else {
+// 				message.value = data.message;
+// 			}
+// 			loading.value = false;
+// 		} catch (error) {
+// 			message.value = "Errore nel caricamento del messaggio.";
+// 		}
+// 	} else {
+// 		message.value = "Ops... Qualcosa e' andato storto.";
+// 	}
+// });
 </script>
 <style lang="scss" scoped>
 .loading {

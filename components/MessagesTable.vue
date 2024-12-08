@@ -24,15 +24,7 @@ export default {
 			messages: [],
 		};
 	},
-	computed: {
-		// qrValue() {
-		// 	const token = encodeURIComponent(this.token);
-		// 	return `https://mea-christmas-gift.netlify.app/?token=${token}`;
-		// },
-		// token() {
-		// 	return uuidv4();
-		// },
-	},
+	computed: {},
 	async mounted() {
 		await this.getMessages();
 	},
