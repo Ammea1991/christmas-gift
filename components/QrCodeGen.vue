@@ -1,34 +1,42 @@
 <template>
 	<v-container>
-		<v-row>
-			<v-col cols="12" sm="6" offset-sm="3">
-				<div class="mb-6 text-center">
-					<v-form ref="form">
-						<v-text-field
-							v-model="form.title"
-							label="Inserisci il titolo del biglietto di auguri"
-							outlined
-							clearable
-						></v-text-field>
-						<v-text-field
-							v-model="form.text"
-							label="Inserisci il messaggio di auguri"
-							outlined
-							clearable
-						></v-text-field>
-					</v-form>
-					<div class="qr-container">
-						<canvas ref="qrCodeCanvas"></canvas>
-					</div>
-					<div class="pa-4">
-						<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
-					</div>
-					<div class="pa-4">
-						<v-btn color="primary" @click="downloadQRCodeAsPDF">Scarica QR Code come PDF</v-btn>
-					</div>
+		<div class="mb-6 d-flex flex-column align-center">
+			<v-form ref="form">
+				<v-text-field
+					class="pa-0"
+					v-model="form.title"
+					label="Titolo del biglietto di auguri"
+					outlined
+					clearable
+				></v-text-field>
+				<v-text-field v-model="form.text" label="Messaggio di auguri" outlined clearable></v-text-field>
+				<div class="d-flex flex-column flex-sm-row">
+					<span class="pa-2 text-center">Colore di sfondo del biglietto</span>
+					<v-color-picker v-model="bgColor" mode="rgba" hide-inputs class="ma-4"></v-color-picker>
+					<span class="pa-2 text-center">Colore del testo del biglietto</span>
+
+					<v-color-picker
+						v-model="fontColor"
+						hide-inputs
+						mode="rgba"
+						class="ma-4"
+						label="Colore testo biglietto"
+					></v-color-picker>
 				</div>
-			</v-col>
-		</v-row>
+			</v-form>
+			<div class="pa-4">
+				<v-btn color="primary" @click="showPreview = true">Visaulizza anteprima</v-btn>
+			</div>
+			<div v-if="!qrValue" class="pa-4">
+				<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
+			</div>
+			<div v-if="qrValue" class="qr-container">
+				<canvas ref="qrCodeCanvas"></canvas>
+			</div>
+			<div class="pa-4">
+				<v-btn color="primary" @click="downloadQRCodeAsPDF">Scarica QR Code come PDF</v-btn>
+			</div>
+		</div>
 	</v-container>
 </template>
 
@@ -44,6 +52,9 @@ export default {
 				title: null,
 				text: null,
 			},
+			showPreview: false,
+			bgColor: null,
+			fontColor: null,
 			qrValue: null,
 			token: null,
 			qrColor: "#234022", // Colore scuro del QR code
@@ -138,5 +149,32 @@ export default {
 	align-items: center;
 	background-color: transparent;
 	// margin-top: 50px;
+}
+.loading {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.message {
+	position: relative;
+	height: 100vh; /* Imposta l'altezza del contenitore */
+	.title {
+		font-family: "Pacifico", cursive;
+		font-size: 4rem;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	}
+	.text {
+		font-size: 1.5rem;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	}
+}
+
+.content {
+	position: absolute;
+	top: 50%; /* Posiziona al 50% dall'alto */
+	left: 50%; /* Posiziona al 50% da sinistra */
+	transform: translate(-50%, -50%); /* Sposta indietro il div di metà della sua larghezza e altezza */
+	width: 90%;
 }
 </style>
