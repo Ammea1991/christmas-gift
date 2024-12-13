@@ -1,8 +1,6 @@
-<!-- layouts/default.vue -->
 <template>
 	<div class="layout-wrapper">
 		<!-- Il contenuto principale della pagina -->
-		<Navbar />
 		<v-app>
 			<slot> </slot>
 			<div class="snowflakes" ref="snowflakes"></div>
@@ -14,6 +12,7 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+
 const snowflakes = ref(null);
 
 // Funzione per generare i fiocchi di neve

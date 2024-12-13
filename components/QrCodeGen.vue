@@ -25,7 +25,7 @@
 				</div>
 			</v-form>
 			<div class="pa-4">
-				<v-btn color="primary" @click="showPreview = true">Visaulizza anteprima</v-btn>
+				<v-btn color="primary" @click="showPreview">Visaulizza anteprima</v-btn>
 			</div>
 			<div v-if="!qrValue" class="pa-4">
 				<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
@@ -43,6 +43,7 @@
 <script>
 import QRCode from "qrcode"; // Importa QRCode dalla libreria
 import jsPDF from "jspdf"; // Importa il pacchetto jsPDF
+import { messageStore } from "@/stores/message";
 
 export default {
 	name: "QrCodeGenerator",
@@ -52,7 +53,6 @@ export default {
 				title: null,
 				text: null,
 			},
-			showPreview: false,
 			bgColor: null,
 			fontColor: null,
 			qrValue: null,
@@ -61,7 +61,11 @@ export default {
 		};
 	},
 	computed: {},
-
+	setup() {
+		return {
+			store: messageStore(),
+		};
+	},
 	methods: {
 		async downloadQRCodeAsPDF() {
 			if (!this.qrValue) return;
@@ -138,6 +142,15 @@ export default {
 			} catch (error) {
 				console.error("Errore:", error);
 			}
+		},
+
+		async showPreview() {
+			debugger;
+			await this.store.setMessage({
+				title: this.form.title,
+				text: this.form.text,
+			});
+			this.$router.push({ path: "/preview" });
 		},
 	},
 };
