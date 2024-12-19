@@ -16,37 +16,51 @@
 </template>
 
 <script>
+import { messageStore } from "@/stores/message";
+
 export default {
 	name: "Message",
+
 	setup() {
 		definePageMeta({ layout: "outside" });
+		return {
+			store: messageStore(),
+		};
 	},
 	data() {
 		return {
-			message: {},
 			loading: false,
 		};
 	},
+	computed: {
+		message() {
+			return this.store.message;
+		},
+	},
 	methods: {
 		async getMessage() {
-			try {
-				const { _id } = this.$route.query;
-				if (!_id) return (this.message.title = "Nessun messaggio 🎄");
-
-				this.loading = true;
-				const { data, error } = await this.$axios.get("/message", {
-					params: { _id },
-				});
-
-				this.loading = false;
-				if (error) return (this.message = error);
-				this.message = data.message;
-			} catch (err) {
-				this.loading = false;
-
-				return (this.message.title = err.response.data.error);
-			}
+			const { _id } = this.$route.query;
+			await this.store.get(_id);
 		},
+		// async getMessage() {
+		// 	try {
+		// 		const { _id } = this.$route.query;
+		// 		if (!_id) return (this.message.title = "Nessun messaggio 🎄");
+
+		// 		this.loading = true;
+		// 		const { data, error } = await this.$axios.get("/message", {
+		// 			params: { _id },
+		// 		});
+
+		// 		this.loading = false;
+		// 		if (error) return (this.message = error);
+		// 		this.message = data.message;
+		// 	} catch (err) {
+		// 		this.loading = false;
+
+		// 		return (this.message.title = err.response.data.error);
+		// 	}
+		// },
 	},
 	mounted() {
 		this.getMessage();

@@ -32,7 +32,6 @@ export default {
 		async getMessages() {
 			try {
 				const { data } = await this.$axios.get("/messages");
-				debugger;
 				// Normalizza i messaggi
 				this.messages = data
 					.map((item) => ({

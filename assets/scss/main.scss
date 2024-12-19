@@ -9,6 +9,11 @@
 
 /* Container per la neve */
 .snowflakes {
+	background-image: url("/static/images/bg-natale.png");
+	background-size: cover;
+	background-position: center;
+	height: 100vh;
+	position: relative;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -17,7 +22,7 @@
 	pointer-events: none;
 	z-index: 0;
 	overflow: hidden;
-	background-color: #152f48d4;
+	background-color: #183d16df;
 }
 
 /* Stile per ogni fiocco di neve */

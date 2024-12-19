@@ -11,7 +11,11 @@
 		></v-progress-circular>
 		<div v-else class="content">
 			<h1 class="title text-center pa-4">{{ message.title }}</h1>
-			<p class="text text-center pa-4">{{ message.text }}</p>
+			<!-- <p class="text text-center pa-4" v-html="message.text"></p> -->
+			<div class="menu-preview">
+				<h1>Il tuo menu di Natale</h1>
+				<div v-html="styledMenu"></div>
+			</div>
 		</div>
 	</v-container>
 </template>
@@ -34,15 +38,33 @@ export default {
 		};
 	},
 	// layout: "outside",
-	methods: {
-		async getMessage() {
-			this.message = this.store.getMessage;
-			debugger;
+	computed: {
+		message() {
+			const message = this.store.getMessage;
+
+			// message?.text?.replaceAll(/\n/g, "<br>");
+			// console.log(message);
+			return message;
+		},
+		styledMenu() {
+			const message = this.store.getMessage;
+
+			// Applica uno stile o una struttura al testo
+
+			return message?.text
+				?.split("\n")
+				.map((line) => `<p>${line}</p>`)
+				.join("");
 		},
 	},
-	async mounted() {
-		await this.getMessage();
-	},
+	// methods: {
+	// 	async getMessage() {
+	// 		this.message = this.store.getMessage();
+	// 	},
+	// },
+	// async mounted() {
+	// 	await this.getMessage();
+	// },
 };
 // const route = useRoute();
 // const loading = ref(false);
@@ -75,6 +97,8 @@ export default {
 // });
 </script>
 <style lang="scss" scoped>
+.v-container {
+}
 .loading {
 	position: absolute;
 	top: 50%;
@@ -82,24 +106,35 @@ export default {
 	transform: translate(-50%, -50%);
 }
 .message {
-	position: relative;
-	height: 100vh; /* Imposta l'altezza del contenitore */
 	.title {
 		font-family: "Pacifico", cursive;
-		font-size: 4rem;
+		font-size: 3.2rem;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 	}
 	.text {
-		font-size: 1.5rem;
+		white-space: pre-line;
+		font-size: 1.2rem;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 	}
 }
 
 .content {
+	padding: 12px;
+
 	position: absolute;
 	top: 50%; /* Posiziona al 50% dall'alto */
 	left: 50%; /* Posiziona al 50% da sinistra */
 	transform: translate(-50%, -50%); /* Sposta indietro il div di metà della sua larghezza e altezza */
 	width: 90%;
+}
+
+.menu-preview {
+	text-align: center;
+	font-family: "Pacifico", cursive; /* Stile natalizio */
+	color: #e9e9e9; /* Rosso natalizio */
+}
+.menu-preview p {
+	font-size: 1.2rem;
+	margin: 10px 0;
 }
 </style>

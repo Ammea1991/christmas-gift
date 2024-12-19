@@ -1,37 +1,34 @@
 <template>
 	<v-container>
+		<v-text-field v-model="title" label="Titolo del biglietto di auguri" outlined clearable></v-text-field>
+		<!-- <v-text-field v-model="text" label="Messaggio di auguri" outlined clearable></v-text-field> -->
+		<v-textarea v-model="text" label="Messaggio di auguri" outlined clearable></v-textarea>
 		<div class="mb-6 d-flex flex-column align-center">
-			<v-form ref="form">
-				<v-text-field
-					class="pa-0"
-					v-model="form.title"
-					label="Titolo del biglietto di auguri"
-					outlined
-					clearable
-				></v-text-field>
-				<v-text-field v-model="form.text" label="Messaggio di auguri" outlined clearable></v-text-field>
-				<div class="d-flex flex-column flex-sm-row">
-					<span class="pa-2 text-center">Colore di sfondo del biglietto</span>
-					<v-color-picker v-model="bgColor" mode="rgba" hide-inputs class="ma-4"></v-color-picker>
-					<span class="pa-2 text-center">Colore del testo del biglietto</span>
+			<!-- <div class="d-flex flex-column flex-sm-row">
+				<span class="pa-2 text-center">Colore di sfondo del biglietto</span>
+				<v-color-picker v-model="bgColor" mode="rgba" hide-inputs class="ma-4"></v-color-picker>
+				<span class="pa-2 text-center">Colore del testo del biglietto</span>
 
-					<v-color-picker
-						v-model="fontColor"
-						hide-inputs
-						mode="rgba"
-						class="ma-4"
-						label="Colore testo biglietto"
-					></v-color-picker>
-				</div>
-			</v-form>
+				<v-color-picker
+					v-model="fontColor"
+					hide-inputs
+					mode="rgba"
+					class="ma-4"
+					label="Colore testo biglietto"
+				></v-color-picker>
+			</div> -->
 			<div class="pa-4">
 				<v-btn color="primary" @click="showPreview">Visaulizza anteprima</v-btn>
 			</div>
-			<div v-if="!qrValue" class="pa-4">
+			<div class="pa-4">
 				<v-btn color="primary" @click="sendMessage"> Genera QR Code </v-btn>
 			</div>
-			<div v-if="qrValue" class="qr-container">
+			<!-- <div v-if="qrValue" class="qr-container">
 				<canvas ref="qrCodeCanvas"></canvas>
+			</div> -->
+
+			<div class="qr-container">
+				<canvas ref="qrCodeCanvas" style="border: 1px solid black"></canvas>
 			</div>
 			<div class="pa-4">
 				<v-btn color="primary" @click="downloadQRCodeAsPDF">Scarica QR Code come PDF</v-btn>
@@ -49,10 +46,8 @@ export default {
 	name: "QrCodeGenerator",
 	data() {
 		return {
-			form: {
-				title: null,
-				text: null,
-			},
+			title: null,
+			text: null,
 			bgColor: null,
 			fontColor: null,
 			qrValue: null,
@@ -92,9 +87,11 @@ export default {
 		},
 		// Funzione per generare il QR code con canvas
 		async generateQRCode() {
-			if (this.form.title === null || this.form.text === null) return;
-			const canvas = this.$refs.qrCodeCanvas;
+			await this.$nextTick(); // Assicura che il DOM sia aggiornato
 
+			if (this.title === null || this.text === null) return;
+			const canvas = this.$refs.qrCodeCanvas;
+			debugger;
 			const IRI = encodeURIComponent(this.token);
 
 			this.qrValue = `https://mea-christmas-gift.netlify.app/?_id=${IRI}`;
@@ -113,6 +110,7 @@ export default {
 			};
 
 			try {
+				debugger;
 				await QRCode.toCanvas(canvas, this.qrValue, options); // Genera il QR code sul canvas
 				return { err: false };
 			} catch (err) {
@@ -122,18 +120,20 @@ export default {
 
 		async sendMessage() {
 			try {
-				// if (err) return;
-				// const response = await axios.post("/api/message/messages", {
-				// 	token: this.token,
+				await this.store.setMessage({
+					title: this.title,
+					text: this.text,
+				});
+
+				const { data } = await this.store.post();
+
+				// const { data, error } = await this.$axios.post("/messages/create", {
 				// 	message: this.form,
 				// });
-
-				const { data, error } = await this.$axios.post("/messages/create", {
-					message: this.form,
-				});
-				if (error) return;
+				// if (error) return;
 				const { savedMessage } = data;
 
+				debugger;
 				this.token = savedMessage._id;
 
 				const { err } = await this.generateQRCode();
@@ -145,10 +145,9 @@ export default {
 		},
 
 		async showPreview() {
-			debugger;
 			await this.store.setMessage({
-				title: this.form.title,
-				text: this.form.text,
+				title: this.title,
+				text: this.text,
 			});
 			this.$router.push({ path: "/preview" });
 		},
