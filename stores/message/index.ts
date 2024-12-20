@@ -36,12 +36,10 @@ export const messageStore = defineStore("message", {
 
 				if (!_id) _id = id;
 
-				debugger;
 				const { message } = await $fetch<GetApiResponse>("http://localhost:3001/api/message", {
 					method: "GET",
 					params: { _id },
 				});
-				debugger;
 				console.log("response", message);
 				this.message = message;
 			} catch (error) {
@@ -56,7 +54,6 @@ export const messageStore = defineStore("message", {
 					method: "POST",
 					body: { message },
 				});
-				debugger;
 				const { savedMessage } = response;
 
 				this.message = {

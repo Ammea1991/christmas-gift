@@ -1,5 +1,5 @@
 <template>
-	<h1 class="text-center pa-4">Christmas Message 🎄</h1>
+	<h1 class="text-center pa-4">Christmas Menu 🎄</h1>
 	<div class="snowflakes" ref="snowflakes"></div>
 
 	<QrCodeGen />

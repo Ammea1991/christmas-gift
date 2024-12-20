@@ -91,7 +91,6 @@ export default {
 
 			if (this.title === null || this.text === null) return;
 			const canvas = this.$refs.qrCodeCanvas;
-			debugger;
 			const IRI = encodeURIComponent(this.token);
 
 			this.qrValue = `https://mea-christmas-gift.netlify.app/?_id=${IRI}`;
@@ -110,7 +109,6 @@ export default {
 			};
 
 			try {
-				debugger;
 				await QRCode.toCanvas(canvas, this.qrValue, options); // Genera il QR code sul canvas
 				return { err: false };
 			} catch (err) {
@@ -133,7 +131,6 @@ export default {
 				// if (error) return;
 				const { savedMessage } = data;
 
-				debugger;
 				this.token = savedMessage._id;
 
 				const { err } = await this.generateQRCode();
@@ -155,6 +152,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.v-container {
+	background-color: aliceblue !important;
+}
 .qr-container {
 	display: flex;
 	justify-content: center;

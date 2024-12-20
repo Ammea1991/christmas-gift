@@ -2,7 +2,6 @@
 	<div>
 		<v-app-bar color="primary" dark>
 			<v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
-			<v-toolbar-title> {{ route.name }} </v-toolbar-title>
 		</v-app-bar>
 		<v-navigation-drawer v-model="drawer" absolute temporary>
 			<v-list nav dense>
