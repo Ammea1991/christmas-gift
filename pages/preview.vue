@@ -23,7 +23,7 @@
 <script>
 import { messageStore } from "~/stores/message";
 export default {
-	name: "Message",
+	name: "Preview",
 	data() {
 		return {
 			message: {},
@@ -40,16 +40,10 @@ export default {
 	// layout: "outside",
 	computed: {
 		message() {
-			const message = this.store.getMessage;
-
-			// message?.text?.replaceAll(/\n/g, "<br>");
-			// console.log(message);
-			return message;
+			return this.store.getMessage;
 		},
 		styledMenu() {
 			const message = this.store.getMessage;
-
-			// Applica uno stile o una struttura al testo
 
 			return message?.text
 				?.split("\n")

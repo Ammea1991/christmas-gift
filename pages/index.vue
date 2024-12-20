@@ -10,7 +10,11 @@
 		></v-progress-circular>
 		<div v-else class="content">
 			<h1 class="title text-center pa-4">{{ message.title }}</h1>
-			<p class="text text-center pa-4">{{ message.text }}</p>
+
+			<div class="menu-preview">
+				<h1>Il tuo menu di Natale</h1>
+				<div v-html="styledMenu"></div>
+			</div>
 		</div>
 	</v-container>
 </template>
@@ -29,12 +33,22 @@ export default {
 	},
 	data() {
 		return {
+			message: {},
+
 			loading: false,
 		};
 	},
 	computed: {
 		message() {
-			return this.store.message;
+			return this.store.getMessage;
+		},
+		styledMenu() {
+			const message = this.store.getMessage;
+
+			return message?.text
+				?.split("\n")
+				.map((line) => `<p>${line}</p>`)
+				.join("");
 		},
 	},
 	methods: {
