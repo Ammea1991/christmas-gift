@@ -1,8 +1,11 @@
 import { defineStore } from "pinia";
 import { useRoute } from "vue-router";
+import { useRuntimeConfig } from "#app"; // Importa useRuntimeConfig
+
 import { type IMessage, Message } from "~/types/message";
 
 const route = useRoute();
+const config = useRuntimeConfig(); // Ottieni le variabili di configurazione
 
 interface ApiResponse {
 	savedMessage: {
@@ -36,7 +39,7 @@ export const messageStore = defineStore("message", {
 
 				if (!_id) _id = id;
 
-				const { message } = await $fetch<GetApiResponse>("http://localhost:3001/api/message", {
+				const { message } = await $fetch<GetApiResponse>(`${config.public.API_URL}/api/message`, {
 					method: "GET",
 					params: { _id },
 				});
@@ -50,7 +53,7 @@ export const messageStore = defineStore("message", {
 			try {
 				const { title, text } = this.message;
 				const message = new Message(title, text);
-				const response = await $fetch<ApiResponse>("http://localhost:3001/api/messages/create", {
+				const response = await $fetch<ApiResponse>(`${config.public.API_URL}/api/messages/create`, {
 					method: "POST",
 					body: { message },
 				});
