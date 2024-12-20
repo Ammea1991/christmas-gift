@@ -5,7 +5,6 @@ import { useRuntimeConfig } from "#app"; // Importa useRuntimeConfig
 import { type IMessage, Message } from "~/types/message";
 
 const route = useRoute();
-const config = useRuntimeConfig(); // Ottieni le variabili di configurazione
 
 interface ApiResponse {
 	savedMessage: {
@@ -34,12 +33,14 @@ export const messageStore = defineStore("message", {
 			this.message = message;
 		},
 		async get(id: string) {
+			const config = useRuntimeConfig(); // Ottieni le variabili di configurazione
+
 			try {
 				let { _id } = this.getMessage;
 
 				if (!_id) _id = id;
 
-				const { message } = await $fetch<GetApiResponse>(`${config.public.API_URL}/api/message`, {
+				const { message } = await $fetch<GetApiResponse>(`${config.public.apiURL}/message`, {
 					method: "GET",
 					params: { _id },
 				});
@@ -50,10 +51,12 @@ export const messageStore = defineStore("message", {
 			}
 		},
 		async post() {
+			const config = useRuntimeConfig(); // Ottieni le variabili di configurazione
+
 			try {
 				const { title, text } = this.message;
 				const message = new Message(title, text);
-				const response = await $fetch<ApiResponse>(`${config.public.API_URL}/api/messages/create`, {
+				const response = await $fetch<ApiResponse>(`${config.public.API_URL}/messages/create`, {
 					method: "POST",
 					body: { message },
 				});
